@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -23,6 +24,7 @@ public class Leg : MonoBehaviour
     private Transform hip;
     private Transform thigh;
     private Transform foot;
+    private float actualDistance;
 
     void Awake()
     {
@@ -62,7 +64,7 @@ public class Leg : MonoBehaviour
         thigh.localScale = new Vector3(l1, 0.5f, 1);
 
         knee.localPosition = new Vector3((l1 / 2 - 0.15f) * mirrorFactor, 0, 0);
-        knee.rotation = Quaternion.Euler(0, 0, q2 * mirrorFactor);
+        knee.localEulerAngles = new Vector3(0, 0, q2 * mirrorFactor);
 
         foot.localPosition = new Vector3(l2 / 2 * mirrorFactor, 0, 0);
         foot.localScale = new Vector3(l2, 0.3f, 1);
@@ -86,36 +88,47 @@ public class Leg : MonoBehaviour
     {
         float duration = 2f;
         float time = 0;
-        Debug.Log("Moving leg " + (isMirrored ? "Left" : "Right") + " to " + target);
+        //Debug.Log("Moving leg " + (isMirrored ? "Left" : "Right") + " from " + (Vector2)root.transform.position + " to " + target);
+
+        float distance = Vector2.Distance(root.transform.position, target);
+        actualDistance = Vector2.Distance(GetFootPosition(), target);
+
+        Vector2 direction = target - (Vector2)root.transform.position;
+        direction *= isMirrored ? -1 : 1;
+        float phi = Mathf.Acos((l1 * l1 + distance * distance - l2 * l2) / (l1 * 2 * distance)) * Mathf.Rad2Deg;
+        float w = Mathf.Abs(Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
+        float theta = phi - w;
+        float alpha = phi + Mathf.Acos((-l1 * l1 + l2 * l2 + distance * distance) / (2 * distance * l2)) * Mathf.Rad2Deg;
+
         while (time < duration)
         {
             time += Time.deltaTime;
-
-            float distance = Vector2.Distance(root.transform.position, target);
-            Vector2 direction = target - (Vector2)root.transform.position;
-            float atan = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-
-            if (l1 + l2 < distance)
-            {
-                q1 = Mathf.Lerp(q1, atan, time / duration);
-                q2 = 0;
-            }
-            else
-            {
-                float cosAngle0 = (distance * distance + l1 * l1 - l2 * l2) / (2 * distance * l1);
-                float angle0 = Mathf.Acos(cosAngle0) * Mathf.Rad2Deg;
-
-                float cosAngle1 = (l2 * l2 + l1 * l1 - distance * distance) / (2 * l2 * l1);
-                float angle1 = Mathf.Acos(cosAngle1) * Mathf.Rad2Deg;
-
-                q1 = Mathf.Lerp(q1, (atan - angle0) * (isMirrored ? -1 : 1), time / duration);
-                q2 = Mathf.Lerp(q2, (180f - angle1) * (isMirrored ? -1 : 1), time / duration);
-            }
-
+            q1 = Mathf.LerpAngle(q1, theta, time / duration);
+            q2 = Mathf.LerpAngle(q2, -alpha, time / duration);
             ConfigureLegSegments();
+
             yield return null;
         }
         NotifyPlayer();
+    }
+
+    IEnumerator RotateLegRoutine(float targetQ1, float targetQ2)
+    {
+        float duration = 1.5f;
+        float time = 0;
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            q1 = Mathf.LerpAngle(q1, targetQ1, time / duration);
+            q2 = Mathf.LerpAngle(q2, targetQ2, time / duration);
+            ConfigureLegSegments();
+            yield return null;
+        }
+    }
+
+    public void RotateLeg()
+    {
+        StartCoroutine(RotateLegRoutine(initialQ1, initialQ2));
     }
 
     public void MoveTo(Vector2 target)
