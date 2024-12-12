@@ -88,7 +88,7 @@ public class Player : MonoBehaviour
 
     IEnumerator MoveBodyRoutine(Vector3 target)
     {
-        float duration = .1f;
+        float duration = .05f;
         float time = 0;
         Vector3 initialPosition = body.position;
         while (time < duration)

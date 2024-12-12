@@ -114,7 +114,7 @@ public class Leg : MonoBehaviour
 
     IEnumerator RotateLegRoutine(float targetQ1, float targetQ2)
     {
-        float duration = 1.5f;
+        float duration = 0.5f;
         float time = 0;
         while (time < duration)
         {
