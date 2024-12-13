@@ -7,16 +7,16 @@ public class JointController : MonoBehaviour
     public Transform HipLeft;
     public Transform KneeLeft;
 
-    public void ApplyAngles(float hipAngle, float kneeAngle)
+    public void ApplyAngles(float hipAngleRight, float kneeAngleRight, float hipAngleLeft, float kneeAngleLeft)
     {
         if (HipRight != null)
-            HipRight.localRotation = Quaternion.Euler(0, 0, hipAngle);
+            HipRight.rotation = Quaternion.Euler(0, 0, hipAngleRight);
         if (KneeRight != null)
-            KneeRight.localRotation = Quaternion.Euler(0, 0, kneeAngle);
+            KneeRight.rotation = Quaternion.Euler(0, 0, kneeAngleRight);
         if (HipLeft != null)
-            HipLeft.localRotation = Quaternion.Euler(0, 0, -hipAngle);
+            HipLeft.rotation = Quaternion.Euler(0, 0, hipAngleLeft);
         if (KneeLeft != null)
-            KneeLeft.localRotation = Quaternion.Euler(0, 0, -kneeAngle);
+            KneeLeft.rotation = Quaternion.Euler(0, 0, kneeAngleLeft);
     }
 
     public void UpdatePhysics()
