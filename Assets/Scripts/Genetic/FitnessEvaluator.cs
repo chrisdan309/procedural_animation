@@ -12,7 +12,6 @@ public static class FitnessEvaluator
             int end = Mathf.Min(i + batchSize, population.Count);
             List<Individual> batch = population.GetRange(i, end - i);
 
-            // Crea una lista de corutinas para evaluar el lote actual
             List<Coroutine> evaluations = new List<Coroutine>();
             for (int j = 0; j < batch.Count; j++)
             {
@@ -71,10 +70,10 @@ public static class FitnessEvaluator
                 float hipChangeLeft = Mathf.Abs(individual.HipAnglesLeft[i] - individual.HipAnglesLeft[i - 1]);
                 float kneeChangeLeft = Mathf.Abs(individual.KneeAnglesLeft[i] - individual.KneeAnglesLeft[i - 1]);
 
-                if (hipChangeRight > 20f) smoothnessPenalty += hipChangeRight - 20f;
-                if (kneeChangeRight > 20f) smoothnessPenalty += kneeChangeRight - 20f;
-                if (hipChangeLeft > 20f) smoothnessPenalty += hipChangeLeft - 20f;
-                if (kneeChangeLeft > 20f) smoothnessPenalty += kneeChangeLeft - 20f;
+                if (hipChangeRight > 10f) smoothnessPenalty += hipChangeRight - 10f;
+                if (kneeChangeRight > 10f) smoothnessPenalty += kneeChangeRight - 10f;
+                if (hipChangeLeft > 10f) smoothnessPenalty += hipChangeLeft - 10f;
+                if (kneeChangeLeft > 10f) smoothnessPenalty += kneeChangeLeft - 10f;
             }
 
             yield return new WaitForSeconds(stepDuration);
@@ -85,14 +84,18 @@ public static class FitnessEvaluator
         float distanceTraveled = Mathf.Abs(finalPosition.x - initialPosition.x);
 
         // Ajusta la fitness combinando desplazamiento y penalización
-        float fitness = 10 * distanceTraveled;
-        fitness = Mathf.Max(0f, fitness);
+        float fitness = 10 * distanceTraveled - 0.01f*smoothnessPenalty;
+        if (distanceTraveled < 3f)
+        {
+            fitness /= 3;
+        }
+        
+        // fitness = Mathf.Max(0f, fitness);
 
         individual.Fitness = fitness;
 
         Debug.Log($"Individual Fitness: {fitness}");
-
-        // Destruye el clon del robot después de la evaluación
+        
         GameObject.Destroy(robotInstance);
     }
 
