@@ -43,7 +43,6 @@ public class GeneticAlgorithm : MonoBehaviour
     {
         List<Individual> population = new List<Individual>();
 
-        // Obtén las rotaciones iniciales del HipRight y KneeRight en grados
         float initialHipRightAngle = HipRotationToDegrees(jointController.HipRight.localRotation);
         float initialKneeRightAngle = HipRotationToDegrees(jointController.KneeRight.localRotation);
         float initialHipLeftAngle = HipRotationToDegrees(jointController.HipLeft.localRotation);
@@ -64,7 +63,6 @@ public class GeneticAlgorithm : MonoBehaviour
             {
                 if (j == 0)
                 {
-                    // El primer ángulo es igual a las rotaciones iniciales del GameObject
                     individual.HipAnglesRight[j] = initialHipRightAngle;
                     individual.KneeAnglesRight[j] = initialKneeRightAngle;
                     individual.HipAnglesLeft[j] = initialHipLeftAngle;
@@ -74,7 +72,6 @@ public class GeneticAlgorithm : MonoBehaviour
                 }
                 else
                 {
-                    // Generar valores aleatorios para el resto de los pasos
                     individual.HipAnglesRight[j] = Random.Range(-45f, 45f);
                     individual.KneeAnglesRight[j] = Random.Range(-90f, 0f);
                     individual.HipAnglesLeft[j] = Random.Range(-45f, 45f);;
@@ -114,7 +111,7 @@ public class GeneticAlgorithm : MonoBehaviour
 
     Individual Crossover(Individual parent1, Individual parent2)
     {
-        int steps = parent1.HipAnglesRight.Length; // Todos los arrays tienen la misma longitud
+        int steps = parent1.HipAnglesRight.Length;
         Individual offspring = new Individual
         {
             HipAnglesRight = new float[steps],
@@ -125,11 +122,9 @@ public class GeneticAlgorithm : MonoBehaviour
 
         for (int i = 0; i < steps; i++)
         {
-            // Combina valores de los padres para las articulaciones derechas
             offspring.HipAnglesRight[i] = Random.value < 0.5f ? parent1.HipAnglesRight[i] : parent2.HipAnglesRight[i];
             offspring.KneeAnglesRight[i] = Random.value < 0.5f ? parent1.KneeAnglesRight[i] : parent2.KneeAnglesRight[i];
 
-            // Combina valores de los padres para las articulaciones izquierdas
             offspring.HipAnglesLeft[i] = Random.value < 0.5f ? parent1.HipAnglesLeft[i] : parent2.HipAnglesLeft[i];
             offspring.KneeAnglesLeft[i] = Random.value < 0.5f ? parent1.KneeAnglesLeft[i] : parent2.KneeAnglesLeft[i];
         }
