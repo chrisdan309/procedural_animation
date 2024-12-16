@@ -97,7 +97,7 @@ public class Player : MonoBehaviour
             body.position = Vector3.Lerp(initialPosition, target, time / duration);
             yield return null;
         }
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.5f);
         StartWalkingR();
     }
 

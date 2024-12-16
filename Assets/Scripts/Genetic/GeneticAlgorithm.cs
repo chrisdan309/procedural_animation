@@ -27,15 +27,12 @@ public class GeneticAlgorithm : MonoBehaviour
         {
             Debug.Log($"Generation {generation + 1}:");
 
-            // Evaluar la población en paralelo
             yield return StartCoroutine(FitnessEvaluator.EvaluatePopulationParallel(population, jointController, cycleDuration, Robot, batchSize));
-
-            // Ordenar la población por fitness
+            
             population.Sort((a, b) => b.Fitness.CompareTo(a.Fitness));
 
             Debug.Log($"Generation {generation + 1}, Best Fitness: {population[0].Fitness}");
 
-            // Crear nueva generación
             population = CreateNewGeneration(population);
         }
 
@@ -94,32 +91,6 @@ public class GeneticAlgorithm : MonoBehaviour
     {
         return localRotation.eulerAngles.z;
     }
-
-    
-    // IEnumerator EvaluatePopulation(List<Individual> population)
-    // {
-    //     foreach (var individual in population)
-    //     {
-    //         bool isComplete = false;
-    //
-    //         yield return StartCoroutine(FitnessEvaluator.EvaluatePopulationParallel(
-    //             individual,
-    //             jointController,
-    //             cycleDuration,
-    //             Robot,
-    //             fitness =>
-    //             {
-    //                 individual.Fitness = fitness;
-    //                 isComplete = true;
-    //             }
-    //         ));
-    //
-    //         while (!isComplete)
-    //             yield return null;
-    //     }
-    //
-    //     population.Sort((a, b) => b.Fitness.CompareTo(a.Fitness));
-    // }
 
     List<Individual> CreateNewGeneration(List<Individual> population)
     {

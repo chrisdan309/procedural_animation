@@ -156,7 +156,7 @@ MonoBehaviour:
   m: 1
   b: 5
   k: 50
-  sphereParent: {fileID: 0}
+  sphereParent: {fileID: 1366512977}
   maxT: 2
 --- !u!212 &279662164
 SpriteRenderer:

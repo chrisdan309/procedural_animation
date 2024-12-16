@@ -86,7 +86,7 @@ public class Leg : MonoBehaviour
 
     IEnumerator MoveToRoutine(Vector2 target)
     {
-        float duration = 2f;
+        float duration = 0.5f;
         float time = 0;
         //Debug.Log("Moving leg " + (isMirrored ? "Left" : "Right") + " from " + (Vector2)root.transform.position + " to " + target);
 
